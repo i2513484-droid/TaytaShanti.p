@@ -22,7 +22,7 @@ class PPersona:
 
     def __construirInterfaz(self):
         st.title('Bienvenido a TAYTA SHANTI')
-        if st.session_state.persona_Seleccionada !='':
+        if st.session_state.persona_seleccionada is not None:
             st.session_state.docIdentdidad_sesion = st.session_state.persona_seleccionada['docIdentidad']
             st.session_state.nombre_sesion = st.session_state.persona_seleccionada ['nombre']
             st.session_state.edad_sesion = st.session_state.persona_seleccionada['edad']
