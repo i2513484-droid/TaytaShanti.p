@@ -32,11 +32,16 @@ class PPersona:
         listaPersona = self.__nPersona.mostrarPersonas()
         col1, col2 = st.columns([10, 2])
         with col1:
-            st.dataframe(listaPersona, selection_mode = 'single-row', on_select='rerun')
+            personaSeleccionada = st.dataframe(listaPersona, selection_mode = 'single-row', on_select='rerun')
 
         with col2:
-            st.button('Editar')
-    
+            if personaSeleccionada.selection.rows:
+                indice_persona = personaSeleccionada.selection.rows[0]
+                personaSeleccionadaIndice = listaPersonas[indice_persona]
+                btnEditar = st.button('Editar')
+
+                if btnEditar:
+                    pass
     def nuevaPersona(self, persona: dict):
          try:
             self.__nPersona.nuevaPersona(persona)
