@@ -30,7 +30,12 @@ class PPersona:
 
     def mostrarPersonas(self):
         listaPersona = self.__nPersona.mostrarPersonas()
-        st.dataframe(listaPersona, selection_mode = 'single-row', on_select='rerun')
+        col1, col2 = st.columns([10, 2])
+        with col1:
+            st.dataframe(listaPersona, selection_mode = 'single-row', on_select='rerun')
+
+        with col2:
+            st.button('Editar')
     
     def nuevaPersona(self, persona: dict):
          try:
