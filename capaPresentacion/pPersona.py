@@ -13,7 +13,7 @@ class PPersona:
         if 'nombre_seccion' not in st.session_state:
             st.session_state.nombre_seccion = ''
         if 'edad_seccion' not in st.session_state:
-            st.session_state.edad_seccion = ''
+            st.session_state.edad_seccion = 0
         if 'telefono_seccion' not in st.session_state:
             st.session_state.telefono_seccion = ''
         if 'correo_seccion'not in st.session_state:
@@ -31,7 +31,7 @@ class PPersona:
         with st.form(f'FormularioPersona{st.session_state.formularioKey}'):
             txtDocIdentidad = st.text_input('Documento de identidad', value =st.session_state.docIdentidad_seccion)
             txtNombre = st.text_input('Nombre', value=st.session_state.nombre_seccion)
-            txtEdad = st.number_input('Edad', min_value=0, max_value=150, value=st.session_state.edad_seccion)
+            txtEdad = st.number_input('Edad', min_value=0, max_value=150, key='edad_seccion')
             txtTelefono = st.text_input('Telefono', value=st.session_state.telefono_seccion)
             txtCorreo = st.text_input('Correo', value=st.session_state.correo_seccion)
             if st.session_state.persona_seleccionada != '':
@@ -63,7 +63,7 @@ class PPersona:
                 btnEditar = st.button('Editar')
 
                 if btnEditar:
-                   st.session_state.persona_Seleccionada = personaSeleccionadaIndice
+                   st.session_state.persona_seleccionada = personaSeleccionadaIndice
                    st.rerun()
 
                     
@@ -76,10 +76,6 @@ class PPersona:
              st.error(e)
              st.toast('Registro no insertado', duration='short')
 
-
-    def limpiar(self):
-        st.session_state.formularioKey += 1
-        st.rerun
 
     def limpiar(self):
         st.session_state.formularioKey += 1
