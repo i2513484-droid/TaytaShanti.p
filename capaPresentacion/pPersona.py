@@ -30,7 +30,7 @@ class PPersona:
             st.session_state.correo.seccion = st.session_state.persona_seleccionada['correo']
         with st.form(f'FormularioPersona{st.session_state.formularioKey}'):
             txtDocIdentidad = st.text_input('Documento de identidad', value =st.session_state.docIdentidad_seccion)
-            txtNombre = st.text_input('Nombre', value=st.session_state.Nombre_seccion)
+            txtNombre = st.text_input('Nombre', value=st.session_state.nombre_seccion)
             txtEdad = st.number_input('Edad', min_value=0, max_value=150, value=st.session_state.edad_seccion)
             txtTelefono = st.text_input('Telefono', value=st.session_state.telefono_seccion)
             txtCorreo = st.text_input('Correo', value=st.session_state.correo_seccion)
@@ -76,6 +76,10 @@ class PPersona:
              st.error(e)
              st.toast('Registro no insertado', duration='short')
 
+
+    def limpiar(self):
+        st.session_state.formularioKey += 1
+        st.rerun
 
     def limpiar(self):
         st.session_state.formularioKey += 1
