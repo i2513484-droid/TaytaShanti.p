@@ -6,14 +6,14 @@ class PPersona:
         self.__nPersona = NPersona()
         if 'formularioKey' not in st.session_state:
             st.session_state.formularioKey = 0
-        if 'persona_Seleccionada' not in st.session_state:
+        if 'persona_seleccionada' not in st.session_state:
             st.session_state.persona_Seleccionada = ''
         if 'docIdentidad_seccion' not in st.session_state:
             st.session_state.docIdentidad_seccion = ''
         if 'nombre_seccion' not in st.session_state:
             st.session_state.Nombre_seccion = ''
         if 'edad_seccion' not in st.session_state:
-            st.session_state.Edad_seccion = ''
+            st.session_state.Edad_seccion = 0
         if 'telefono_seccion' not in st.session_state:
             st.session_state.Telefono_seccion = ''
         if 'correo_seccion'not in st.session_state:
@@ -22,7 +22,7 @@ class PPersona:
 
     def __construirInterfaz(self):
         st.title('Bienvenido a TAYTA SHANTI')
-        if st.session_state.persona_Seleccionada !='':
+        if st.session_state.persona_seleccionada !='':
             st.session_state.docIdentdidad_sesion = st.session_state.persona_seleccionada['docIdentidad']
             st.session_state.nombre_sesion = st.session_state.persona_seleccionada ['nombre']
             st.session_state.edad_sesion = st.session_state.persona_seleccionada['edad']
