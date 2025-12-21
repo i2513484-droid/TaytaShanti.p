@@ -42,6 +42,7 @@ class PPersona:
 
                 if btnEditar:
                     pass
+                    
     def nuevaPersona(self, persona: dict):
          try:
             self.__nPersona.nuevaPersona(persona)
