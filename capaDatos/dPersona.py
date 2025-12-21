@@ -14,7 +14,7 @@ class DPersona:
                 resultado = consulta.execute()
                 return resultado
         except Exception as e:
-            raise f'Error:{e}'
+            raise e
 
     def mostrarPersonas(self):
         consulta = self.__db.table(self.__nombreTabla).select('*')
