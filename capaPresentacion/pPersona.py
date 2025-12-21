@@ -30,7 +30,7 @@ class PPersona:
 
     def mostrarPersonas(self):
         listaPersona = self.__nPersona.mostrarPersonas()
-        st.dataframe(listaPersona)
+        st.dataframe(listaPersona, selection_mode = 'single-row', on_select='rerun')
     
     def nuevaPersona(self, persona: dict):
          try:
