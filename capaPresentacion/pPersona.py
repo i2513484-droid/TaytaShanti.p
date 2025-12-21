@@ -11,13 +11,13 @@ class PPersona:
         if 'docIdentidad_seccion' not in st.session_state:
             st.session_state.docIdentidad_seccion = ''
         if 'nombre_seccion' not in st.session_state:
-            st.session_state.Nombre_seccion = ''
+            st.session_state.nombre_seccion = ''
         if 'edad_seccion' not in st.session_state:
-            st.session_state.Edad_seccion = ''
+            st.session_state.edad_seccion = ''
         if 'telefono_seccion' not in st.session_state:
-            st.session_state.Telefono_seccion = ''
+            st.session_state.telefono_seccion = ''
         if 'correo_seccion'not in st.session_state:
-            st.session_state.Correo_seccion = ''
+            st.session_state.correo_seccion = ''
         self.__construirInterfaz()
 
     def __construirInterfaz(self):
@@ -75,11 +75,6 @@ class PPersona:
          except Exception as e:
              st.error(e)
              st.toast('Registro no insertado', duration='short')
-
-
-    def limpiar(self):
-        st.session_state.formularioKey += 1
-        st.rerun
 
 
     def limpiar(self):
