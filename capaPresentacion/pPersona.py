@@ -33,9 +33,14 @@ class PPersona:
         st.dataframe(listaPersona)
     
     def nuevaPersona(self, persona: dict):
-        self.__nPersona.nuevaPersona(persona)
-        st.toast('Registro insertado correctamente', duration='short')
-        self.limpiar()
+         try:
+            self.__nPersona.nuevaPersona(persona)
+            st.toast('Registro insertado correctamente', duration='short')
+            self.limpiar()
+         except Exception as e:
+             st.error(e)
+             st.toast('Registro no insertado', duration='short')
+
 
     def limpiar(self):
         st.session_state.formularioKey += 1
