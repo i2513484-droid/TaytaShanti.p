@@ -30,4 +30,3 @@ class DPersona:
 
     def eliminarPersona(self):
         pass 
-
