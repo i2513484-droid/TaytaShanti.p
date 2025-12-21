@@ -4,11 +4,13 @@ import streamlit as st
 class PPersona:
     def __init__(self):
         self.__nPersona = NPersona()
+        if 'formularioKey' not in st.session_state:
+            st.session_state.formularioKey = 0
         self.__construirInterfaz()
 
     def __construirInterfaz(self):
         st.title('Bienvenido a TAYTA SHANTI')
-        with st.form("FormularioPersona"):
+        with st.form(f'FormularioPersona{st.session_state.formularioKey}'):
             txtDocIdentidad = st.text_input("Documento de identidad")
             txtNombre = st.text_input("Nombre")
             txtEdad = st.number_input("Edad", min_value=0, max_value=150)
@@ -32,3 +34,9 @@ class PPersona:
     
     def nuevaPersona(self, persona: dict):
         self.__nPersona.nuevaPersona(persona)
+        st.toast('Registro insertado correctamente', duration='short')
+        self.limpiar()
+
+    def limpiar(self):
+        st.session_state.formularioKey += 1
+        st.rerun
