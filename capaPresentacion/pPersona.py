@@ -29,10 +29,10 @@ class PPersona:
         self.mostrarPersonas()
 
     def mostrarPersonas(self):
-        listaPersona = self.__nPersona.mostrarPersonas()
+        listaPersonas = self.__nPersona.mostrarPersonas()
         col1, col2 = st.columns([10, 2])
         with col1:
-            personaSeleccionada = st.dataframe(listaPersona, selection_mode = 'single-row', on_select='rerun')
+            personaSeleccionada = st.dataframe(listaPersonas, selection_mode = 'single-row', on_select='rerun')
 
         with col2:
             if personaSeleccionada.selection.rows:
