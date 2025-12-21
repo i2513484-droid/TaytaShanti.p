@@ -24,10 +24,10 @@ class PPersona:
         st.title('Bienvenido a TAYTA SHANTI')
         if st.session_state.persona_seleccionada !='':
             st.session_state.docIdentdidad_sesion = st.session_state.persona_seleccionada['docIdentidad']
-            st.session_state.nombre_sesion = st.session_state.persona_seleccionada ['Nombre']
-            st.session_state.edad_sesion = st.session_state.persona_seleccionada['Edad']
-            st.session_state.telefono_seccion = st.session_state.persona_selecionada['Telefono']
-            st.session_state.correo.seccion = st.session_state.persona_seleccionada['Correo']
+            st.session_state.nombre_sesion = st.session_state.persona_seleccionada ['nombre']
+            st.session_state.edad_sesion = st.session_state.persona_seleccionada['edad']
+            st.session_state.telefono_seccion = st.session_state.persona_selecionada['telefono']
+            st.session_state.correo.seccion = st.session_state.persona_seleccionada['correo']
         with st.form(f'FormularioPersona{st.session_state.formularioKey}'):
             txtDocIdentidad = st.text_input('Documento de identidad', value=st.session_state.docIdentidad_seccion)
             txtNombre = st.text_input('Nombre', value=st.session_state.nombre_seccion)
