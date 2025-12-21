@@ -39,15 +39,15 @@ class PPersona:
             else:
                 btnGuardar = st.form_submit_button('Guardar', type = 'primary')
            
-            if btnGuardar:
-                persona = {
-                    'Documento de identidad': txtDocIdentidad,
-                    'Nombre': txtNombre,
-                    'Edad': txtEdad,
-                    'Telefono': txtTelefono,
-                    'Correo': txtCorreo
-                }
-                self.nuevaPersona(persona)
+                if btnGuardar:
+                    persona = {
+                        'Documento de identidad': txtDocIdentidad,
+                        'Nombre': txtNombre,
+                        'Edad': txtEdad,
+                        'Telefono': txtTelefono,
+                        'Correo': txtCorreo
+                    }
+                    self.nuevaPersona(persona)
         self.mostrarPersonas()
 
     def mostrarPersonas(self):
