@@ -22,16 +22,16 @@ class PPersona:
 
     def __construirInterfaz(self):
         st.title('Bienvenido a TAYTA SHANTI')
-        if st.session_state.persona_Seleccionada !='':
+        if st.session_state.persona_seleccionada !='':
             st.session_state.docIdentdidad_sesion = st.session_state.persona_seleccionada['docIdentidad']
-            st.session_state.nombre_sesion = st.session_state.persona_seleccionada ['nombre']
-            st.session_state.edad_sesion = st.session_state.persona_seleccionada['edad']
-            st.session_state.telefono_seccion = st.session_state.persona_selecionada['telefono']
-            st.session_state.correo.seccion = st.session_state.persona_seleccionada['correo']
+            st.session_state.nombre_sesion = st.session_state.persona_seleccionada ['Nombre']
+            st.session_state.edad_sesion = st.session_state.persona_seleccionada['Edad']
+            st.session_state.telefono_seccion = st.session_state.persona_selecionada['Telefono']
+            st.session_state.correo.seccion = st.session_state.persona_seleccionada['Correo']
         with st.form(f'FormularioPersona{st.session_state.formularioKey}'):
-            txtDocIdentidad = st.text_input('Documento de identidad', value =st.session_state.docIdentidad_seccion)
-            txtNombre = st.text_input('Nombre', value=st.session_state.Nombre_seccion)
-            txtEdad = st.number_input('Edad', min_value=0, max_value=150, value=st.session_state.edad_seccion)
+            txtDocIdentidad = st.text_input('Documento de identidad', value=st.session_state.docIdentidad_seccion)
+            txtNombre = st.text_input('Nombre', value=st.session_state.nombre_seccion)
+            txtEdad = st.number_input('Edad', min_value = 0, max_value = 150, value=st.session_state.edad_seccion)
             txtTelefono = st.text_input('Telefono', value=st.session_state.telefono_seccion)
             txtCorreo = st.text_input('Correo', value=st.session_state.correo_seccion)
             if st.session_state.persona_seleccionada != '':
@@ -75,11 +75,6 @@ class PPersona:
          except Exception as e:
              st.error(e)
              st.toast('Registro no insertado', duration='short')
-
-
-    def limpiar(self):
-        st.session_state.formularioKey += 1
-        st.rerun
 
 
     def limpiar(self):
