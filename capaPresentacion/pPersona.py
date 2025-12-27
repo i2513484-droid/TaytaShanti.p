@@ -4,105 +4,77 @@ import streamlit as st
 class PPersona:
     def __init__(self):
         self.__nPersona = NPersona()
-
-        # Inicialización correcta del session_state
-        st.session_state.setdefault('formularioKey', 0)
-        st.session_state.setdefault('persona_seleccionada', None)
-        st.session_state.setdefault('docIdentidad_seccion', '')
-        st.session_state.setdefault('nombre_seccion', '')
-        st.session_state.setdefault('edad_seccion', 0)
-        st.session_state.setdefault('telefono_seccion', '')
-        st.session_state.setdefault('correo_seccion', '')
-
+        if 'formularioKey' not in st.session_state:
+            st.session_state.formularioKey = 0
+        if 'persona_Seleccionada' not in st.session_state:
+            st.session_state.persona_Seleccionada = ''
+        if 'docIdentidad_seccion' not in st.session_state:
+            st.session_state.docIdentidad_seccion = ''
+        if 'nombre_seccion' not in st.session_state:
+            st.session_state.Nombre_seccion = ''
+        if 'edad:_seccion' not in st.session_state:
+            st.session_state.Edad_seccion = ''
+        if 'telefono_seccion' not in st.session_state:
+            st.session_state.Telefono_seccion = ''
+        if 'correo_seccion'not in st.session_state:
+            st.session_state.Correo_seccion = ''
         self.__construirInterfaz()
 
     def __construirInterfaz(self):
         st.title('Bienvenido a TAYTA SHANTI')
-        if st.session_state.persona_seleccionada:
-            p = st.session_state.persona_seleccionada
-            st.session_state.docIdentidad_seccion = p['docIdentidad']
-            st.session_state.nombre_seccion = p['nombre']
-            st.session_state.edad_seccion = p['edad']
-            st.session_state.telefono_seccion = p['telefono']
-            st.session_state.correo_seccion = p['correo']
-
+        if st.session_state.persona_Seleccionada !='':
+            st.session_state.docIdentdidad_sesion = st.session_state.persona_seleccionada['docIdentidad']
+            st.session_state.nombre_sesion = st.session_state.persona_seleccionada['Nombre']
+            st.session_state.edad_sesion = st.session_state.persona_seleccionada['Edad']
+            st.session_state.telefono_sesion = st.session_state.persona_seleccionada['Telefono']
+            st.session_state.correo_sesion = st.session_state.persona_seleccionada['Correo']
         with st.form(f'FormularioPersona{st.session_state.formularioKey}'):
-            txtDocIdentidad = st.text_input(
-                'Documento de identidad',
-                value=st.session_state.docIdentidad_seccion
-            )
-            txtNombre = st.text_input(
-                'Nombre',
-                value=st.session_state.nombre_seccion
-            )
-            txtEdad = st.number_input(
-                'Edad',
-                min_value=0,
-                max_value=150,
-                value=st.session_state.edad_seccion
-            )
-            txtTelefono = st.text_input(
-                'Teléfono',
-                value=st.session_state.telefono_seccion
-            )
-            txtCorreo = st.text_input(
-                'Correo',
-                value=st.session_state.correo_seccion
-            )
-
-            btnGuardar = st.form_submit_button('Guardar', type='primary')
-
-            if btnGuardar:
-                persona = {
-                    'docIdentidad': txtDocIdentidad,
-                    'nombre': txtNombre,
-                    'edad': txtEdad,
-                    'telefono': txtTelefono,
-                    'correo': txtCorreo
-                }
-                self.nuevaPersona(persona)
-
+            txtDocIdentidad = st.text_input('Documento de identidad', value =st.session_state.docIdentidad_seccion)
+            txtNombre = st.text_input('Nombre', value=st.session_state.Nombre_seccion)
+            txtEdad = st.number_input('Edad', min_value=0, max_value=150, value=st.session_state.edad_seccion)
+            txtTelefono = st.text_input('Telefono', value=st.session_state.telefono_seccion)
+            txtCorreo = st.text_input('Correo', value=st.session_state.correo_seccion)
+            if st.session_state.persona_seleccionada != '':
+                btnActualizar = st.form_submit_button('Actualizar', type = 'primary')
+            else:
+                btnGuardar = st.form_submit_button('Guardar', type = 'primary')
+           
+                if btnGuardar:
+                    persona = {
+                        'Documento de identidad': txtDocIdentidad,
+                        'Nombre': txtNombre,
+                        'Edad': txtEdad,
+                        'Telefono': txtTelefono,
+                        'Correo': txtCorreo
+                    }
+                    self.nuevaPersona(persona)
         self.mostrarPersonas()
 
     def mostrarPersonas(self):
         listaPersonas = self.__nPersona.mostrarPersonas()
         col1, col2 = st.columns([10, 2])
-
         with col1:
-            tabla = st.dataframe(
-                listaPersonas,
-                selection_mode='single-row',
-                on_select='rerun'
-            )
+            personaSeleccionada = st.dataframe(listaPersonas, selection_mode = 'single-row', on_select='rerun')
 
         with col2:
-            if tabla.selection.rows:
-                indice = tabla.selection.rows[0]
-                persona = listaPersonas[indice]
+            if personaSeleccionada.selection.rows:
+                indice_persona = personaSeleccionada.selection.rows[0]
+                personaSeleccionadaIndice = listaPersonas[indice_persona]
+                btnEditar = st.button('Editar')
 
-                if st.button('Editar'):
-                    st.session_state.persona_seleccionada = persona
-                    st.rerun()
+                if btnEditar:
+                   st.session_state.persona_Seleccionada = personaSeleccionadaIndice
+                   st.rerun()
 
+                    
     def nuevaPersona(self, persona: dict):
-        try:
+         try:
             self.__nPersona.nuevaPersona(persona)
-            st.toast('Registro insertado correctamente')
+            st.toast('Registro insertado correctamente', duration='short')
             self.limpiar()
-        except Exception as e:
-            st.error(str(e))
-            st.toast('Registro no insertado')
-
-    def limpiar(self):
-        st.session_state.formularioKey += 1
-        st.session_state.persona_seleccionada = None
-        st.session_state.docIdentidad_seccion = ''
-        st.session_state.nombre_seccion = ''
-        st.session_state.edad_seccion = 0
-        st.session_state.telefono_seccion = ''
-        st.session_state.correo_seccion = ''
-        st.rerun()
-
+         except Exception as e:
+             st.error(e)
+             st.toast('Registro no insertado', duration='short')
 
 
     def limpiar(self):
