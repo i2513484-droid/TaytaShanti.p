@@ -4,11 +4,10 @@ import streamlit as st
 class PPersona:
     def __init__(self):
         self.__nPersona = NPersona()
-        # Inicializar todas las variables de sesión con nombres consistentes
         if 'formularioKey' not in st.session_state:
             st.session_state.formularioKey = 0
         if 'persona_seleccionada' not in st.session_state:
-            st.session_state.persona_seleccionada = None  # Usar None en lugar de ''
+            st.session_state.persona_seleccionada = None  
         if 'docIdentidad_sesion' not in st.session_state:
             st.session_state.docIdentidad_sesion = ''
         if 'nombre_sesion' not in st.session_state:
@@ -23,10 +22,8 @@ class PPersona:
 
     def __construirInterfaz(self):
         st.title('Bienvenido a TAYTA SHANTI')
-        
-        # Verificar si hay una persona seleccionada (usando None como valor por defecto)
+
         if st.session_state.persona_seleccionada is not None:
-            # Actualizar valores de sesión desde la persona seleccionada
             persona = st.session_state.persona_seleccionada
             st.session_state.docIdentidad_sesion = persona.get('docIdentidad', persona.get('Documento de identidad', ''))
             st.session_state.nombre_sesion = persona.get('Nombre', '')
@@ -40,12 +37,9 @@ class PPersona:
             txtEdad = st.number_input('Edad', min_value=0, max_value=150, value=st.session_state.edad_sesion)
             txtTelefono = st.text_input('Telefono', value=st.session_state.telefono_sesion)
             txtCorreo = st.text_input('Correo', value=st.session_state.correo_sesion)
-            
-            # Botón de envío dentro del formulario
             if st.session_state.persona_seleccionada is not None:
                 btnActualizar = st.form_submit_button('Actualizar', type='primary')
                 if btnActualizar:
-                    # Aquí deberías agregar la lógica para actualizar
                     nueva_persona = {
                         'docIdentidad': txtDocIdentidad,
                         'Nombre': txtNombre,
@@ -53,7 +47,6 @@ class PPersona:
                         'Telefono': txtTelefono,
                         'Correo': txtCorreo
                     }
-                    # self.actualizarPersona(nueva_persona)  # Descomentar cuando implementes
                     self.limpiar()
             else:
                 btnGuardar = st.form_submit_button('Guardar', type='primary')
@@ -77,25 +70,23 @@ class PPersona:
                 col1, col2 = st.columns([10, 2])
                 
                 with col1:
-                    # Mostrar el dataframe
                     st.write("Lista de Personas:")
                     st.dataframe(listaPersonas)
                     
                 with col2:
-                    # Para selección simple, usamos selectbox en lugar de dataframe selection
-                    if hasattr(listaPersonas, 'iloc'):  # Es un DataFrame de pandas
+                    if hasattr(listaPersonas, 'iloc'):
                         nombres = listaPersonas['Nombre'].tolist()
-                    else:  # Es una lista de diccionarios
+                    else:
                         nombres = [p.get('Nombre', f"Persona {i}") for i, p in enumerate(listaPersonas)]
                     
                     seleccion = st.selectbox("Seleccionar persona", options=[""] + nombres)
                     
                     if seleccion != "":
-                        # Encontrar la persona seleccionada
-                        if hasattr(listaPersonas, 'iloc'):  # DataFrame
+
+                        if hasattr(listaPersonas, 'iloc'): 
                             idx = nombres.index(seleccion)
                             persona_seleccionada = listaPersonas.iloc[idx].to_dict()
-                        else:  # Lista de diccionarios
+                        else:
                             idx = nombres.index(seleccion)
                             persona_seleccionada = listaPersonas[idx]
                         
@@ -120,10 +111,7 @@ class PPersona:
             st.toast('Registro no insertado', icon='❌')
 
     def limpiar(self):
-        # Incrementar la clave del formulario para limpiarlo
         st.session_state.formularioKey += 1
-        
-        # Limpiar todas las variables de sesión relacionadas con el formulario
         st.session_state.persona_seleccionada = None
         st.session_state.docIdentidad_sesion = ''
         st.session_state.nombre_sesion = ''
