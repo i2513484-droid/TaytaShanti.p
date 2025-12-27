@@ -25,8 +25,9 @@ class DPersona:
         consulta = self.__db.table(self.__nombreTabla).insert(persona)
         return self.__ejecutarConsultas(consulta)
     
-    def actualizarPersona(self):
-        pass 
+    def actualizarPersona(self, persona, dict, docIdentidad: str):
+        consulta = self.__db.table(self.__nombreTabla).update(persona).eq('docIdentidad',docIdentidad)
+        return self.__ejecutarConsultas(consulta)
 
     def eliminarPersona(self):
         pass 
