@@ -104,11 +104,23 @@ class PPersona:
     def nuevaPersona(self, persona: dict):
         try:
             self.__nPersona.nuevaPersona(persona)
-            st.toast('Registro insertado correctamente', icon='✅')
+            st.toast('Registro insertado correctamente', duration = 'short')
             self.limpiar()
         except Exception as e:
             st.error(f"Error: {e}")
-            st.toast('Registro no insertado', icon='❌')
+            st.toast('Registro no insertado',duration = 'short')
+
+    def actualizarPersona(self, persona: dict, docIdentidad: str):
+        try:
+            self.__nPersona.actualizarPersonas(persona, docIdentidad)
+            st.toast('Registro actualizado correctamente', duration = 'short')
+            self.limpiar()
+        except Exception as e:
+            st.error(f"Error: {e}")
+            st.toast('Registro no actualizado', duration = 'short')
+
+    def eliminarPersona(self):
+        pass
 
     def limpiar(self):
         st.session_state.formularioKey += 1
