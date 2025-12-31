@@ -4,12 +4,11 @@ class NPersona:
     def __init__(self):
         self.__dPersona = DPersona()
 
-    # MÉTODO CORREGIDO - 2 PARÁMETROS
-    def actualizarPersonas(self, persona: dict, docidentidad_original: str):
+    def actualizarPersonas(self, persona: dict, docIdentidad_original: str):
         """Actualiza una persona existente"""
         try:
             # Actualizar en la base de datos
-            return self.__dPersona.actualizar(persona, docidentidad_original)
+            return self.__dPersona.actualizar(persona, docIdentidad_original)
         except Exception as e:
             raise Exception(f"Error al actualizar persona: {e}")
 
@@ -28,9 +27,9 @@ class NPersona:
         except Exception as e:
             raise Exception(f"Error al obtener personas: {e}")
 
-    def eliminarPersona(self, docidentidad: str):
+    def eliminarPersona(self, docIdentidad: str):
         """Elimina una persona por documento de identidad"""
         try:
-            return self.__dPersona.eliminar(docidentidad)
+            return self.__dPersona.eliminar(docIdentidad)
         except Exception as e:
             raise Exception(f"Error al eliminar persona: {e}")
