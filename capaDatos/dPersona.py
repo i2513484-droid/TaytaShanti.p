@@ -54,7 +54,6 @@ class DPersona:
             self.__conexion.desconectar()
             
             if resultado:
-                # Convertir a lista de diccionarios
                 columnas = ['docidentidad', 'Nombre', 'Edad', 'Telefono', 'Correo']
                 personas = []
                 for fila in resultado:
