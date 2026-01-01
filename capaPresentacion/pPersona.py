@@ -1,163 +1,187 @@
+# capaPresentacion/pPersona.py
+import streamlit as st
 from capaLogica.nPersona import NPersona
-import streamlit as st 
 
 class PPersona:
     def __init__(self):
-        self.__nPersona = NPersona()
-        self.__inicializar_session_state()
-        self.__construirInterfaz()
-
-    def __inicializar_session_state(self):
-        """Inicializa las variables de sesión"""
-        if 'persona_seleccionada' not in st.session_state:
-            st.session_state.persona_seleccionada = None
-        if 'doc_original' not in st.session_state:
-            st.session_state.doc_original = ''
-
-    def __construirInterfaz(self):
-        st.title('TAYTA SHANTI - Gestión de Personas')
+        self.nPersona = NPersona()
+    
+    def mostrar(self):
+        """Muestra la interfaz principal de gestión de personas"""
+        st.title("👥 Gestión de Personas")
         
-        # Formulario
-        self.__mostrar_formulario()
+        # Menú de opciones
+        opcion = st.sidebar.selectbox(
+            "Seleccione una opción:",
+            ["📋 Ver Personas", "➕ Agregar Persona", "✏️ Editar Persona", "🗑️ Eliminar Persona"]
+        )
         
-        # Lista de personas
-        self.__mostrar_lista_personas()
-
-    def __mostrar_formulario(self):
-        """Muestra el formulario para registrar o editar personas"""
-        st.header("📝 Formulario de Persona")
+        if opcion == "📋 Ver Personas":
+            self._mostrar_personas()
+        elif opcion == "➕ Agregar Persona":
+            self._agregar_persona()
+        elif opcion == "✏️ Editar Persona":
+            self._editar_persona()
+        elif opcion == "🗑️ Eliminar Persona":
+            self._eliminar_persona()
+    
+    def _mostrar_personas(self):
+        """Muestra todas las personas en una tabla"""
+        st.header("📋 Lista de Personas")
         
-        # Valores por defecto
-        doc = ''
-        nombre = ''
-        edad = 0
-        telefono = ''
-        correo = ''
-        
-        # Si estamos editando, cargar datos
-        if st.session_state.persona_seleccionada:
-            persona = st.session_state.persona_seleccionada
-            doc = persona.get('docidentidad', persona.get('docIdentidad', ''))
-            nombre = persona.get('Nombre', '')
-            edad = persona.get('Edad', 0)
-            telefono = persona.get('Telefono', '')
-            correo = persona.get('Correo', '')
-        
-        # Campos del formulario
-        with st.form("form_persona"):
-            txtDoc = st.text_input("Documento de Identidad", value=doc, 
-                                  disabled=bool(st.session_state.persona_seleccionada))
-            txtNombre = st.text_input("Nombre", value=nombre)
-            txtEdad = st.number_input("Edad", min_value=0, max_value=150, value=edad)
-            txtTelefono = st.text_input("Teléfono", value=telefono)
-            txtCorreo = st.text_input("Correo", value=correo)
+        try:
+            personas = self.nPersona.obtener_todas_personas()
             
+            if personas:
+                # Mostrar en tabla
+                st.dataframe(personas, use_container_width=True)
+                
+                # Mostrar métricas
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Total Personas", len(personas))
+            else:
+                st.info("No hay personas registradas aún.")
+                
+        except Exception as e:
+            st.error(f"Error al obtener personas: {e}")
+    
+    def _agregar_persona(self):
+        """Formulario para agregar nueva persona"""
+        st.header("➕ Agregar Nueva Persona")
+        
+        with st.form("form_agregar"):
             col1, col2 = st.columns(2)
             
             with col1:
-                if st.session_state.persona_seleccionada:
-                    btn_actualizar = st.form_submit_button("🔄 Actualizar", type="primary")
-                else:
-                    btn_guardar = st.form_submit_button("💾 Guardar", type="primary")
-            
+                doc_identidad = st.text_input("Documento de Identidad*")
+                nombre = st.text_input("Nombre*")
+                apellido = st.text_input("Apellido*")
+                
             with col2:
-                if st.session_state.persona_seleccionada:
-                    btn_cancelar = st.form_submit_button("❌ Cancelar")
-                else:
-                    btn_limpiar = st.form_submit_button("🧹 Limpiar")
-        
-        # Manejar acciones del formulario
-        if st.session_state.persona_seleccionada and btn_actualizar:
-            nueva_persona = {
-                'docIdentidad': txtDoc,
-                'Nombre': txtNombre,
-                'Edad': txtEdad,
-                'Telefono': txtTelefono,
-                'Correo': txtCorreo
-            }
-            # Llamar al método con 2 argumentos
-            self.__actualizar_persona(nueva_persona, st.session_state.doc_original)
+                email = st.text_input("Email")
+                telefono = st.text_input("Teléfono")
+                edad = st.number_input("Edad", min_value=0, max_value=120, value=0)
             
-        elif not st.session_state.persona_seleccionada and btn_guardar:
-            persona = {
-                'docIdentidad': txtDoc,
-                'Nombre': txtNombre,
-                'Edad': txtEdad,
-                'Telefono': txtTelefono,
-                'Correo': txtCorreo
-            }
-            self.__nueva_persona(persona)
+            # Campos adicionales
+            direccion = st.text_area("Dirección")
             
-        elif (st.session_state.persona_seleccionada and btn_cancelar) or (not st.session_state.persona_seleccionada and btn_limpiar):
-            self.__limpiar_formulario()
-
-    def __mostrar_lista_personas(self):
-        """Muestra la lista de personas registradas"""
-        st.header("👥 Personas Registradas")
+            submitted = st.form_submit_button("💾 Guardar Persona")
+            
+            if submitted:
+                if not doc_identidad or not nombre or not apellido:
+                    st.error("Los campos marcados con * son obligatorios")
+                    return
+                
+                try:
+                    datos_persona = {
+                        'docIdentidad': doc_identidad,
+                        'nombre': nombre,
+                        'apellido': apellido,
+                        'email': email if email else None,
+                        'telefono': telefono if telefono else None,
+                        'edad': edad if edad > 0 else None,
+                        'direccion': direccion if direccion else None
+                    }
+                    
+                    resultado = self.nPersona.crear_persona(datos_persona)
+                    st.success(f"✅ Persona creada exitosamente: {resultado['nombre']} {resultado['apellido']}")
+                    st.rerun()
+                    
+                except Exception as e:
+                    st.error(f"❌ Error al crear persona: {e}")
+    
+    def _editar_persona(self):
+        """Formulario para editar persona existente"""
+        st.header("✏️ Editar Persona")
         
         try:
-            personas = self.__nPersona.mostrarPersonas()
+            # Obtener personas para seleccionar
+            personas = self.nPersona.obtener_todas_personas()
             
-            if personas:
-                for i, persona in enumerate(personas):
-                    col1, col2, col3, col4, col5, col6, col7 = st.columns([3, 2, 1, 2, 3, 1, 1])
-                    
-                    with col1:
-                        st.write(f"**{persona.get('Nombre', '')}**")
-                    with col2:
-                        st.write(persona.get('docidentidad', persona.get('docIdentidad', '')))
-                    with col3:
-                        st.write(persona.get('Edad', ''))
-                    with col4:
-                        st.write(persona.get('Telefono', ''))
-                    with col5:
-                        st.write(persona.get('Correo', ''))
-                    with col6:
-                        if st.button("✏️", key=f"editar_{i}"):
-                            st.session_state.persona_seleccionada = persona
-                            st.session_state.doc_original = persona.get('docidentidad', persona.get('docIdentidad', ''))
-                            st.rerun()
-                    with col7:
-                        if st.button("🗑️", key=f"eliminar_{i}"):
-                            doc = persona.get('docidentidad', persona.get('docIdentidad', ''))
-                            self.__eliminar_persona(doc)
-                st.info(f"Total: {len(personas)} personas")
-            else:
-                st.info("No hay personas registradas")
+            if not personas:
+                st.info("No hay personas para editar.")
+                return
+            
+            # Selector de persona
+            opciones = [f"{p['docIdentidad']} - {p['nombre']} {p['apellido']}" for p in personas]
+            seleccion = st.selectbox("Seleccione una persona:", opciones)
+            
+            if seleccion:
+                doc_identidad = seleccion.split(" - ")[0]
+                persona = self.nPersona.obtener_persona(doc_identidad)
+                
+                if persona:
+                    with st.form("form_editar"):
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            nombre = st.text_input("Nombre*", value=persona.get('nombre', ''))
+                            apellido = st.text_input("Apellido*", value=persona.get('apellido', ''))
+                            
+                        with col2:
+                            email = st.text_input("Email", value=persona.get('email', ''))
+                            telefono = st.text_input("Teléfono", value=persona.get('telefono', ''))
+                        
+                        edad = st.number_input("Edad", 
+                                             min_value=0, 
+                                             max_value=120, 
+                                             value=persona.get('edad', 0))
+                        direccion = st.text_area("Dirección", value=persona.get('direccion', ''))
+                        
+                        submitted = st.form_submit_button("💾 Actualizar Persona")
+                        
+                        if submitted:
+                            if not nombre or not apellido:
+                                st.error("Nombre y apellido son obligatorios")
+                                return
+                            
+                            datos_actualizados = {
+                                'nombre': nombre,
+                                'apellido': apellido,
+                                'email': email if email else None,
+                                'telefono': telefono if telefono else None,
+                                'edad': edad if edad > 0 else None,
+                                'direccion': direccion if direccion else None
+                            }
+                            
+                            try:
+                                resultado = self.nPersona.actualizar_personas(datos_actualizados, doc_identidad)
+                                st.success(f"✅ Persona actualizada exitosamente")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"❌ Error al actualizar: {e}")
                 
         except Exception as e:
             st.error(f"Error: {e}")
-
-    def __nueva_persona(self, persona: dict):
-        """Registra una nueva persona"""
+    
+    def _eliminar_persona(self):
+        """Interfaz para eliminar persona"""
+        st.header("🗑️ Eliminar Persona")
+        st.warning("⚠️ Esta acción no se puede deshacer")
+        
         try:
-            self.__nPersona.nuevaPersona(persona)
-            st.success("Persona registrada correctamente")
-            self.__limpiar_formulario()
+            personas = self.nPersona.obtener_todas_personas()
+            
+            if not personas:
+                st.info("No hay personas para eliminar.")
+                return
+            
+            # Selector de persona
+            opciones = [f"{p['docIdentidad']} - {p['nombre']} {p['apellido']}" for p in personas]
+            seleccion = st.selectbox("Seleccione una persona para eliminar:", opciones)
+            
+            if seleccion:
+                doc_identidad = seleccion.split(" - ")[0]
+                persona = self.nPersona.obtener_persona(doc_identidad)
+                
+                if persona and st.button("🗑️ Confirmar Eliminación", type="primary"):
+                    try:
+                        self.nPersona.eliminar_persona(doc_identidad)
+                        st.success(f"✅ Persona eliminada exitosamente")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Error al eliminar: {e}")
+                        
         except Exception as e:
             st.error(f"Error: {e}")
-
-    def __actualizar_persona(self, persona: dict, doc_original: str):
-        """Actualiza una persona existente"""
-        try:
-            # LLAMADA CORRECTA - 2 argumentos
-            self.__nPersona.actualizarPersonas(persona, doc_original)
-            st.success("Persona actualizada correctamente")
-            self.__limpiar_formulario()
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-    def __eliminar_persona(self, doc: str):
-        """Elimina una persona"""
-        try:
-            self.__nPersona.eliminarPersona(doc)
-            st.success("Persona eliminada correctamente")
-            self.__limpiar_formulario()
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-    def __limpiar_formulario(self):
-        """Limpia el formulario"""
-        st.session_state.persona_seleccionada = None
-        st.session_state.doc_original = ''
-        st.rerun()
