@@ -1,36 +1,33 @@
-# conexion.py
 import os
+import streamlit as st
 from supabase import create_client, Client
 
-class ConexionDB:
+class Conexion:
     def __init__(self):
-        # En Streamlit Cloud, usa st.secrets en lugar de .env
+        """Inicializa la conexión a Supabase usando Streamlit secrets"""
         try:
-            import streamlit as st
             self.url = st.secrets["SUPABASE_URL"]
             self.api_key = st.secrets["SUPABASE_API_KEY"]
-        except:
-            # Fallback para desarrollo local
-            from dotenv import load_dotenv
-            load_dotenv()
-            self.url = os.getenv('SUPABASE_URL')
-            self.api_key = os.getenv('SUPABASE_API_KEY')
-        
-    def get_conexion(self) -> Client:
-        """Obtiene la conexión a Supabase"""
-        if not hasattr(self, '_client') or self._client is None:
-            self._client = create_client(self.url, self.api_key)
+            self._client = None
+        except KeyError as e:
+            raise ValueError(f"Falta la configuración en secrets.toml: {e}")
+    
+    def get_client(self) -> Client:
+        if self._client is None:
+            try:
+                self._client = create_client(self.url, self.api_key)
+                print("✅ Conexión a Supabase establecida")
+            except Exception as e:
+                raise ConnectionError(f"No se pudo conectar a Supabase: {e}")
         return self._client
     
-    def test_conexion(self):
-        """Prueba la conexión"""
+    def test_connection(self):
         try:
-            client = self.get_conexion()
-            # Realiza una consulta simple para verificar
-            result = client.table('personas').select("*").limit(1).execute()
-            return True, "Conexión exitosa"
+            client = self.get_client()
+            response = client.table('personas').select("count", count="exact").execute()
+            print("✅ Conexión a Supabase verificada correctamente")
+            return True
         except Exception as e:
-            return False, f"Error de conexión: {e}"
-
-# Instancia global para reutilizar la conexión
-conexion = ConexionDB()
+            print(f"❌ Error en conexión: {e}")
+            return False
+conexion_db = Conexion()
